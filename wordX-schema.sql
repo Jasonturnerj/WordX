@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    scores JSON -- JSON field to store scores data, adjust as needed
 );
 
 -- Create Leaderboard Table

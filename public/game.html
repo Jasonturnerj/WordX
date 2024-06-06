@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+</head>
+<body> 
+    <h1>Wordx</h1>
+    <h2>Type Away</h2>
+    <button id="startButton">Start</button><br>
+    <textarea id="textBox" rows="10" cols="50" style="display:none;"></textarea><br>
+    <div id="timer">60s</div><br>
+    <table id="leaderboard-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Username</th>
+          <th>Score (%)</th>
+          <th>Words Per Minute</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Leaderboard rows will be inserted here -->
+      </tbody>
+    </table
+
+    
+</body>
+<script>
+      async function fetchLeaderboard() {
+        try {
+          const response = await fetch('/leaderboard');
+          const leaderboardData = await response.json();
+          updateLeaderboard(leaderboardData);
+        } catch (error) {
+          console.error('Error fetching leaderboard:', error);
+        }
+      }
+    
+      function updateLeaderboard(leaderboardData) {
+        const leaderboardTable = document.getElementById('leaderboard-table');
+        leaderboardTable.innerHTML = ''; // Clear previous data
+    
+        leaderboardData.forEach((entry, index) => {
+          const row = leaderboardTable.insertRow();
+          const rankCell = row.insertCell();
+          const usernameCell = row.insertCell();
+          const scoreCell = row.insertCell();
+          const wpmCell = row.insertCell();
+    
+          rankCell.textContent = index + 1;
+          usernameCell.textContent = entry.username;
+          scoreCell.textContent = entry.score.toFixed(2) + '%';
+          wpmCell.textContent = entry.words_per_minute;
+        });
+      }
+    
+      // Fetch leaderboard when the page loads
+      window.onload = fetchLeaderboard;
+    </script>
+</html>
