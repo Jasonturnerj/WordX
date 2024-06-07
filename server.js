@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const SpellChecker = require('simple-spellchecker');
 const { Pool } = require('pg');
 const { PerformanceNodeTiming } = require('perf_hooks');
 
@@ -27,7 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to check authentication
-const authenticateToken = (req, res, next) => {
+function authenticateToken(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) return res.redirect('/login.html');
 
@@ -98,25 +99,19 @@ app.post('/signup', async (req, res) => {
   });
 
 
-  app.post('/game', authenticateToken, async (req, res) => {
-  const { percent, words_per_minute } = req.body;
-  const userId = req.user.id;
+  app.post('/submit_score', authenticateToken, async (req, res) => {
+    const { percent, words_per_minute } = req.body;
+    const userId = req.user.id;
 
-  try {
-    await db.query('INSERT INTO scores (user_id, percent, words_per_minute) VALUES ($1, $2, $3)', [userId, percent, words_per_minute]);
-    res.status(201).send('Score added.');
-  } catch (err) {
-    console.error('Error adding score:', err);
-    res.status(500).send('Internal server error.');
-  }
-});
+    try {
+      await db.query('INSERT INTO scores (user_id, percent, words_per_minute) VALUES ($1, $2, $3)', [userId, percent, words_per_minute]);
+      res.status(201).send('Score added.');
+    } catch (err) {
+      console.error('Error adding score:', err);
+      res.status(500).send('Internal server error.');
+    }
+  });
 
-
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
 app.get('/leaderboard', async (req, res) => {
   try {
     // Fetch leaderboard data from the database
@@ -134,4 +129,32 @@ app.get('/leaderboard', async (req, res) => {
     console.error('Error fetching leaderboard:', error);
     res.status(500).send('Internal server error.');
   }
+});
+
+app.post("/misspelled_count", async (req, res) => {
+  function misspelledCount(words) {
+    return new Promise(function (resolve) {
+      SpellChecker.getDictionary("en-US", function(err, dictionary) {
+        if(!err) {
+          let misspelledCount = 0
+          for (let word of words) {
+            var misspelled = ! dictionary.spellCheck(word);
+            if(misspelled) {
+                misspelledCount++
+            }
+          }
+          resolve(misspelledCount)
+        }
+      })  
+    })
+  }
+
+  misspelledCount(req.body["words[]"]).then(function (data) {
+    res.sendStatus(200).send(data)
+  })
+})
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });

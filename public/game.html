@@ -8,9 +8,8 @@
 <body> 
     <h1>Wordx</h1>
     <h2>Type Away</h2>
-    <button id="startButton">Start</button><br>
-    <textarea id="textBox" rows="10" cols="50" style="display:none;"></textarea><br>
-    <div id="timer">60s</div><br>
+    <textarea id="textBox" rows="10" cols="50"></textarea><br>
+    <div id="timer">60 seconds</div><br>
     <table id="leaderboard-table">
       <thead>
         <tr>
@@ -27,36 +26,81 @@
 
     
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-      async function fetchLeaderboard() {
-        try {
-          const response = await fetch('/leaderboard');
-          const leaderboardData = await response.json();
-          updateLeaderboard(leaderboardData);
-        } catch (error) {
-          console.error('Error fetching leaderboard:', error);
-        }
+  async function fetchLeaderboard() {
+    try {
+      const response = await fetch('/leaderboard');
+      const leaderboardData = await response.json();
+      updateLeaderboard(leaderboardData);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+    }
+  }
+    
+  function updateLeaderboard(leaderboardData) {
+    const leaderboardTable = document.getElementById('leaderboard-table');
+    leaderboardTable.innerHTML = ''; // Clear previous data
+
+    leaderboardData.forEach((entry, index) => {
+      const row = leaderboardTable.insertRow();
+      const rankCell = row.insertCell();
+      const usernameCell = row.insertCell();
+      const scoreCell = row.insertCell();
+      const wpmCell = row.insertCell();
+
+      rankCell.textContent = index + 1;
+      usernameCell.textContent = entry.username;
+      scoreCell.textContent = parseFloat(entry.percent).toFixed(2) + '%';
+      wpmCell.textContent = entry.words_per_minute;
+    });
+  }
+
+  function startTimer() {
+    let timeLeft = 5;
+    const timerElement = $('#timer');
+    
+    const countdown = setInterval(function() {
+      timerElement.text(timeLeft + " seconds");
+      
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        alert('Game over');
+
+        let totalWords = $("#textBox").val().split(" ")
+
+        $.ajax({
+          url: "/misspelled_count",
+          method: "POST",
+          data: { "words": totalWords }
+        }).then(function(misspelledWords) {
+          let wpm = totalWords - misspelledWords
+          let percent = (wpm / totalWords).toFixed(2)
+
+          $.ajax({
+            url: "/submit_score",
+            method: "POST",
+            data: { percent: percent, wpm: wpm }
+          }).done(function(data) {
+            console.log(data)
+          })
+        })
       }
+      
+      timeLeft--;
+    }, 1000);
+  }
+
+  var timerStarted = false
+  $("#textBox").one("input", function() {
+    if (!timerStarted) {
+      startTimer()
+      timerStarted = true
+    }
+  })
+
     
-      function updateLeaderboard(leaderboardData) {
-        const leaderboardTable = document.getElementById('leaderboard-table');
-        leaderboardTable.innerHTML = ''; // Clear previous data
-    
-        leaderboardData.forEach((entry, index) => {
-          const row = leaderboardTable.insertRow();
-          const rankCell = row.insertCell();
-          const usernameCell = row.insertCell();
-          const scoreCell = row.insertCell();
-          const wpmCell = row.insertCell();
-    
-          rankCell.textContent = index + 1;
-          usernameCell.textContent = entry.username;
-          scoreCell.textContent = entry.score.toFixed(2) + '%';
-          wpmCell.textContent = entry.words_per_minute;
-        });
-      }
-    
-      // Fetch leaderboard when the page loads
-      window.onload = fetchLeaderboard;
-    </script>
+  // Fetch leaderboard when the page loads
+  fetchLeaderboard()
+</script>
 </html>
