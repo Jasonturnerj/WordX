@@ -1,0 +1,58 @@
+body {
+    background: url('https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmlwdTNwYmRiNG01cmcwYXkwMTczaHQ4OG4zeDIweHc3MHJ4c3ljNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/aRZ4vTsHnyW6A/giphy.gif') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+h2 {
+    margin-top: 20px;
+    font-size: 3em;
+    text-align: center;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 400px;
+}
+label, input {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+input[type="submit"] {
+    width: auto;
+    background-color: #00bfff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+input[type="submit"]:hover {
+    background-color: #00bfffc5;
+}
+button {
+    background: none;
+    border: none;
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+button:hover {
+    color: #00bfff;
+}

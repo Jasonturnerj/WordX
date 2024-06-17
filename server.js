@@ -102,15 +102,30 @@ app.post('/signup', async (req, res) => {
   app.post('/submit_score', authenticateToken, async (req, res) => {
     const { percent, words_per_minute } = req.body;
     const userId = req.user.id;
-
+  
+    const sanitizedPercent = parseFloat(percent);
+    const sanitizedWordsPerMinute = parseInt(words_per_minute, 10);
+  
+    if (isNaN(sanitizedPercent) || isNaN(sanitizedWordsPerMinute)) {
+      return res.status(400).json({ error: 'Invalid percent or words_per_minute' });
+    }
+  
     try {
-      await db.query('INSERT INTO scores (user_id, percent, words_per_minute) VALUES ($1, $2, $3)', [userId, percent, words_per_minute]);
-      res.status(201).send('Score added.');
+      const result = await db.query(
+        `INSERT INTO scores (user_id, percent, words_per_minute)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (user_id)
+         DO UPDATE SET percent = EXCLUDED.percent, words_per_minute = EXCLUDED.words_per_minute
+         RETURNING *`,
+        [userId, sanitizedPercent, sanitizedWordsPerMinute]
+      );
+      res.status(201).json({ message: 'Score added/updated.', score: result.rows[0] });
     } catch (err) {
-      console.error('Error adding score:', err);
+      console.error('Error adding/updating score:', err);
       res.status(500).send('Internal server error.');
     }
   });
+  
 
 app.get('/leaderboard', async (req, res) => {
   try {
@@ -140,17 +155,17 @@ app.post("/misspelled_count", async (req, res) => {
           for (let word of words) {
             var misspelled = ! dictionary.spellCheck(word);
             if(misspelled) {
-                misspelledCount++
+              misspelledCount++
             }
           }
+          console.log("MISSPELLED COUNT: " + misspelledCount)
           resolve(misspelledCount)
         }
       })  
     })
   }
-
   misspelledCount(req.body["words[]"]).then(function (data) {
-    res.sendStatus(200).send(data)
+    res.send(data.toString())
   })
 })
 

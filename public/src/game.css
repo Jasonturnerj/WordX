@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background: linear-gradient(270deg, #1a1a1a, #333, #1a1a1a);
+            background-size: 600% 600%;
+            animation: BackgroundAnimation 15s ease infinite;
+            color: #00bfff;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        @keyframes BackgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        textarea {
+            width: 80%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: #00bfff;
+            border: 3px solid #00bfff;
+            padding: 10px;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        #timer {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 3px solid #00bfff;
+            display: inline-block;
+            border-radius: 8px;
+            background-color: #333;
+        }
+
+        table {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #333;
+            color: #00bfff;
+            border: 3px solid #00bfff;
+        }
+
+        th, td {
+            border: 1px solid #00bfff;
+            padding: 10px;
+        }
+
+        .modal-content {
+            background-color: #333;
+            color: #00bfff;
+            border: 3px solid #00bfff;
+        }
+
+        .btn-close {
+            background-color: #00bfff;
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+        }
+
+        .neon-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            border: 3px solid #00bfff;
+            background-color: transparent;
+            color: #00bfff;
+            font-family: 'Press Start 2P', cursive;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .neon-button:hover {
+            background-color: #00bfff;
+            color: #333;
+        }
