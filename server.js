@@ -6,14 +6,16 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const SpellChecker = require('simple-spellchecker');
 const { Pool } = require('pg');
-const config = require('./config'); // Import config
+const { SECRET_KEY } = require('./config');
 
 const app = express();
-const port = config.PORT;
-const secretKey = config.SECRET_KEY;
+const port = process.env.PORT || 3000;
 
 const db = new Pool({
-  connectionString: config.getDatabaseUri()
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Middleware to parse URL-encoded form data and cookies
@@ -28,20 +30,18 @@ function authenticateToken(req, res, next) {
   const token = req.cookies.jwt;
   if (!token) return res.redirect('/login.html');
 
-  jwt.verify(token, secretKey, (err, user) => {
+  jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) return res.redirect('/login.html');
     req.user = user;
     next();
   });
 }
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Define routes for the HTML pages
 app.get('/', (req, res) => {
   res.redirect('/signup');
 });
 
-// Define routes for the HTML pages
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
@@ -62,7 +62,7 @@ app.post('/signup', async (req, res) => {
     const result = await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id', [username, email, hashedPassword]);
     const userId = result.rows[0].id;
 
-    const token = jwt.sign({ id: userId, username }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ id: userId, username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game');
   } catch (err) {
@@ -83,7 +83,7 @@ app.post('/login', async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) return res.status(401).send('Invalid password.');
 
-    const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game');
   } catch (err) {
@@ -128,7 +128,6 @@ app.get('/leaderboard', async (req, res) => {
       ORDER BY s.percent DESC
       LIMIT 10
     `);
-
     res.json(leaderboardData.rows);
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
@@ -163,3 +162,4 @@ app.post("/misspelled_count", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+`
