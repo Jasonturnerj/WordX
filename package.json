@@ -4,6 +4,8 @@
   "description": "fun typing game",
   "main": "server.js",
   "scripts": {
+    "start":"node server.js",
+    "build":"echo'skipping build step'",
     "test": "jest -i"
   },
   "author": "Jason Turner",
