@@ -14,7 +14,7 @@ const connectionString = 'postgresql://wordx_2qxd_user:un0HfObZ8GKpQQIV4h4bu3lDD
 
 const db = new Pool({
   connectionString:connectionString ,
-  ssl
+  
 });
 
 // Middleware to parse URL-encoded form data and cookies
