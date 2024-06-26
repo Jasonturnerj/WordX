@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: false,
+  ssl: true,
 });
 
 // Middleware to parse URL-encoded form data and cookies
