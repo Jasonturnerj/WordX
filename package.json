@@ -12,9 +12,11 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
-    "simple-spellchecker": "^1.0.2"
+    "simple-spellchecker": "^1.0.2",
+    "vercel": "^34.2.8"
   }
 }
