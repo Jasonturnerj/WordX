@@ -86,7 +86,7 @@ app.post('/login', async (req, res) => {
         
   if (!passwordMatch) {
       // Password does not match scenario
-      return res.status(404).json({ error: 'Invalid password.' });
+      return res.status(401).json({ error: 'Invalid password.' });
   }
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
