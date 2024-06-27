@@ -57,11 +57,11 @@
                     body: JSON.stringify({ username, password }),
                 });
 
-                const result = await response.json();
-
-                if (response.status === 200) {
+                if (response.ok) {
+                    const result = await response.json();
                     window.location.href = result.redirect;
                 } else {
+                    const result = await response.json();
                     document.getElementById('modalBody').textContent = result.error;
                     new bootstrap.Modal(document.getElementById('errorModal')).show();
                 }
