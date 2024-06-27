@@ -16,10 +16,9 @@ const db = new Pool({
   connectionString:connectionString,
   
 });
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware to parse URL-encoded form data and cookies
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Serve static files from the public directory
@@ -79,14 +78,14 @@ app.post('/login', async (req, res) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.render('login', { error: { type: 'userNotFound' } });
+      return res.status(401).json({ error: 'Username not found.' });
       // Alternatively, render with error in case of server-side rendering
       // res.render('login', { error: { type: 'userNotFound' } });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.render('login', { error: { type: 'incorrectPassword' } });
+      return res.status(404).json({ error: 'Invalid password.' });
       // Alternatively, render with error in case of server-side rendering
       // res.render('login', { error: { type: 'incorrectPassword' } });
     }
