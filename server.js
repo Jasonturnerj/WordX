@@ -77,10 +77,18 @@ app.post('/login', async (req, res) => {
     const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
-    if (!user)  return res.status(404).json({ error: 'User not found.' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+      // Alternatively, render with error in case of server-side rendering
+      // res.render('login', { error: { type: 'userNotFound' } });
+    }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) return res.status(401).json({ error: 'Invalid password.' });
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid password.' });
+      // Alternatively, render with error in case of server-side rendering
+      // res.render('login', { error: { type: 'incorrectPassword' } });
+    }
 
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
@@ -88,6 +96,8 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Error logging in:', err);
     res.status(500).send('Internal server error.');
+    // Alternatively, render with error in case of server-side rendering
+    // res.render('login', { error: { type: 'serverError' } });
   }
 });
 

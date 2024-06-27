@@ -11,23 +11,17 @@
 <body>
     <h2>Wordx</h2>
     <h2>Login</h2>
-    <div class="container">
-        <form id="loginForm">
-            <div id="errorMessages"></div>
-            <div class="mb-3">
-                <label for="username" class="form-label">Username:</label>
-                <input type="text" id="username" name="username" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" id="password" name="password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-    </div>
-    <p class="error-message">
-        <% if (error && error.type === 'validationError') { %>
-            Please fill out all fields.
+    <form action="/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required> 
+        <p class="error-message">
+        <% if (error && error.type === 'incorrectCredentials') { %>
+                Incorrect username or password.
         <% } %>
-    </p>
+        </p>
+        <input type="submit" value="Login">
+    </form>
+   
 </html>
