@@ -27,8 +27,9 @@
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-document.getElementById('loginForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const errorMessages = document.getElementById('errorMessages');
@@ -36,35 +37,14 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     // Clear previous error messages
     errorMessages.innerHTML = '';
 
-    // Check if username and password are provided
+    // Client-side validation (optional)
     if (!username || !password) {
         errorMessages.innerHTML = '<div class="alert alert-danger">Username and password are required.</div>';
         return;
     }
 
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
-
-        // Check if response is successful
-        if (response.ok) {
-            const result = await response.json();
-            window.location.href = "/game"; // Redirect to the game or dashboard page
-        } else {
-            // Handle different error scenarios here
-            if (response.status === 401 || response.status === 404) {
-                errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
-            }
-        }
-    } catch (error) {
-        console.error('Error logging in:', error);
-        errorMessages.innerHTML = '<div class="alert alert-danger">Error logging in. Please try again later.</div>';
-    }
+    // Submit the form traditionally
+    this.submit();
 });
 </script>
 </html>
