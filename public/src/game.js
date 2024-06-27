@@ -1,5 +1,3 @@
-
-
 async function fetchLeaderboard() {
     try {
         const response = await fetch('/leaderboard');

@@ -2,25 +2,21 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
-const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const SpellChecker = require('simple-spellchecker');
 const { Pool } = require('pg');
-
+const { SECRET_KEY } = require('./config');
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT || 4000;
 const connectionString = 'postgresql://wordx_2qxd_user:un0HfObZ8GKpQQIV4h4bu3lDDA5SrXcK@dpg-cpua8dqju9rs73fvammg-a/wordx_2qxd';
-const secretKey = 'hazelislong';
 
 const db = new Pool({
   connectionString:connectionString,
   
 });
-app.use(cors());
+
 // Middleware to parse URL-encoded form data and cookies
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -65,7 +61,7 @@ app.post('/signup', async (req, res) => {
     const result = await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id', [username, email, hashedPassword]);
     const userId = result.rows[0].id;
 
-    const token = jwt.sign({ id: userId, username }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ id: userId, username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game');
   } catch (err) {
@@ -81,24 +77,17 @@ app.post('/login', async (req, res) => {
     const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
-    if (!user) {
-      console.log('User not found:', username);
-      return res.status(400).json({ username: 'User not found.' });
-    }
+    if (!user) return res.status(404).send('User not found.');
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      console.log('Invalid password for user:', username);
-      return res.status(401).json({ password: 'Invalid password.' });
-    }
+    if (!passwordMatch) return res.status(401).send('Invalid password.');
 
-    const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
-    console.log('User logged in successfully:', username);
     res.redirect('/game');
   } catch (err) {
     console.error('Error logging in:', err);
-    res.status(500).json({ error: 'Internal server error.' });
+    res.status(500).send('Internal server error.');
   }
 });
 
