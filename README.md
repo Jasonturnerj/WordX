@@ -1,7 +1,7 @@
 
   # WordX
 
-**[WordX Live Site](http://your-deployed-url.com)** not fully up yet 
+**[WordX Live Site](https://wordx-ci54.onrender.com)** 
 
 WordX is an interactive web application designed to help users improve their typing accuracy and speed. The app allows users to type out words displayed on the screen, tracks the number of correctly and incorrectly typed words, and calculates the words per minute (WPM) and accuracy percentage. It also features a leaderboard to showcase top scores.
 
