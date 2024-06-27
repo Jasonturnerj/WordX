@@ -42,8 +42,17 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (!username || !password) {
-                document.getElementById('modalBody').textContent = 'Please enter both username and password.';
+            let errorMessage = '';
+
+            if (!username) {
+                errorMessage += 'Please enter a username.<br>';
+            }
+            if (!password) {
+                errorMessage += 'Please enter a password.<br>';
+            }
+
+            if (errorMessage) {
+                document.getElementById('modalBody').innerHTML = errorMessage;
                 new bootstrap.Modal(document.getElementById('errorModal')).show();
                 return;
             }
