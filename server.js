@@ -75,36 +75,30 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-      // Query the database to find the user by username
-      const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-      const user = result.rows[0];
+    const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+    const user = result.rows[0];
 
-      // Check if user exists
-      if (!user) {
-          return res.sendFile(path.join(__dirname, 'public', 'login.html'));
-          // Alternatively, render with error in case of server-side rendering
-          // return res.render('login', { error: { type: 'userNotFound' } });
-      }
-
-      // Compare passwords using bcrypt
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (!passwordMatch) {
-          return res.sendFile(path.join(__dirname, 'public', 'login.html'));
-          // Alternatively, render with error in case of server-side rendering
-          // return res.render('login', { error: { type: 'incorrectPassword' } });
-      }
-
-      // Generate JWT token for authentication
-      const token = jwt.sign({ id: user.id, username: user.username }, 'SECRET_KEY', { expiresIn: '1h' });
-      res.cookie('jwt', token, { httpOnly: true });
-      
-      // Redirect to the game page upon successful login
-      res.redirect('/game');
-  } catch (err) {
-      console.error('Error logging in:', err);
-      res.status(500).send('Internal server error.');
+    if (!user) {
+      return res.render('login', { error: { type: 'userNotFound' } });
       // Alternatively, render with error in case of server-side rendering
-      // res.render('login', { error: { type: 'serverError' } });
+      // res.render('login', { error: { type: 'userNotFound' } });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.render('login', { error: { type: 'incorrectPassword' } });
+      // Alternatively, render with error in case of server-side rendering
+      // res.render('login', { error: { type: 'incorrectPassword' } });
+    }
+
+    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    res.cookie('jwt', token, { httpOnly: true });
+    res.redirect('/game')
+  } catch (err) {
+    console.error('Error logging in:', err);
+    res.status(500).send('Internal server error.');
+    // Alternatively, render with error in case of server-side rendering
+    // res.render('login', { error: { type: 'serverError' } });
   }
 });
 
