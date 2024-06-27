@@ -28,6 +28,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
 document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -36,12 +37,14 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     // Clear previous error messages
     errorMessages.innerHTML = '';
 
-    // Client-side validation (optional)
-    if (!username || !password) {
+    // Client-side validation
+    if (!username && !password) {
         errorMessages.innerHTML = '<div class="alert alert-danger">Username and password are required.</div>';
-        return;
+    } else if (!username) {
+        errorMessages.innerHTML = '<div class="alert alert-danger">Username is required.</div>';
+    } else if (!password) {
+        errorMessages.innerHTML = '<div class="alert alert-danger">Password is required.</div>';
     }
-
     // Submit the form traditionally
 });
 </script>
