@@ -25,53 +25,9 @@
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-document.getElementById('loginForm').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const errorMessages = document.getElementById('errorMessages');
-
-    // Clear previous error messages
-    errorMessages.innerHTML = '';
-
-    // Client-side validation
-    if (!username || !password) {
-        errorMessages.innerHTML = '<div class="alert alert-danger">Username and password are required.</div>';
-        return;
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('password', password);
-
-        const response = await fetch('/login', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (response.status === 200) {
-            const result = await response.json();
-            if (result.redirect) {
-                window.location.href = result.redirect; // Redirect to the game or dashboard page
-            } else {
-                errorMessages.innerHTML = '<div class="alert alert-danger">Login failed. Please try again.</div>';
-            }
-        } else if (response.status === 401) {
-            errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
-        } else if (response.status === 404) {
-            errorMessages.innerHTML = '<div class="alert alert-danger">User not found. Please register first.</div>';
-        } else {
-            errorMessages.innerHTML = '<div class="alert alert-danger">Login failed. Please try again later.</div>';
-        }
-    } catch (error) {
-        console.error('Login request failed:', error);
-        errorMessages.innerHTML = '<div class="alert alert-danger">Login request failed. Please try again later.</div>';
-    }
-});
-
-</script>
+    <p class="error-message">
+        <% if (error && error.type === 'validationError') { %>
+            Please fill out all fields.
+        <% } %>
+    </p>
 </html>
