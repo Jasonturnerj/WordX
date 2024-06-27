@@ -41,32 +41,25 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         return;
     }
 
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+    const response = await fetch('/login', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+});
 
-        if (!response.ok) {
-            const result = await response.json();
-            window.location.href = result.redirect;
-        }
-
-        const responseData = await response.json();
-
-        if (response.status === 404 || response.status === 401) {
-            errorMessages.innerHTML = `<div class="alert alert-danger">${responseData.error}</div>`;
-            return;
-        }
-
-        window.location.href = responseData.redirect; // Redirect to game screen
-    } catch (error) {
-        console.error('Error:', error);
-        errorMessages.innerHTML = '<div class="alert alert-danger">An unexpected error occurred. Please try again later.</div>';
+if (response.ok) {
+    const result = await response.json();
+    window.location.href = result.redirect; // Redirect to the game or dashboard page
+} else {
+    // Handle different error scenarios here
+    if (response.status === 401) {
+        errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
+    } else {
+        errorMessages.innerHTML = '<div class="alert alert-danger">Error logging in. Please try again later.</div>';
     }
+}
 });
 </script>
 </html>

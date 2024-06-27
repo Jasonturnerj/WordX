@@ -75,7 +75,7 @@ The custom API endpoints are designed to ensure secure and efficient handling of
 
 ### APIs
 
-- Simple-SpellChecker API
+- Simple-SpellChecker API (https://www.npmjs.com/package/simple-spellchecker)
 - Custom RESTful APIs for user and score management
 
 ## Additional Information
