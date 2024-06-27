@@ -11,11 +11,16 @@
 <body>
     <h1>Wordx</h1>
     <h2>Login</h2>
-    <form action="/login" method="POST">
+    <form id="loginForm">
+        <div id="username-error" class="error"></div>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
+        
+        <div id="password-error" class="error"></div>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
+        
+        <div id="invalid-error" class="error"></div>
         <input type="submit" value="Login">
     </form>
 </body>

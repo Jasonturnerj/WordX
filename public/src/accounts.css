@@ -56,3 +56,9 @@ button {
 button:hover {
     color: #00bfff;
 }
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}

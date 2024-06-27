@@ -44,14 +44,13 @@ Tests cover various aspects of the application, including:
 
 ## API
 
-WordX utilizes the Simple-SpellChecker API to validate the typed words. The API is integrated to ensure real-time feedback on the correctness of the words typed by the users. The backend of the app also features custom APIs for user authentication and leaderboard management.
-
+WordX utilizes the Simple-SpellChecker API to validate the typed words. The API is integrated to ensure real-time feedback on the correctness of the words typed by the users
 ### API Endpoints
 
-- `POST /api/signup` - Creates a new user account
-- `POST /api/login` - Authenticates a user
-- `POST /api/score` - Submits a user's score
-- `GET /api/leaderboard` - Retrieves the top 10 scores
+- `POST /signup` - Creates a new user account
+- `POST /login` - Authenticates a user
+- `POST /score` - Submits a user's score
+- `GET /leaderboard` - Retrieves the top 10 scores
 
 ### Notes on the API
 

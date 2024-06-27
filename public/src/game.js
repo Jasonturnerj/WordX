@@ -1,3 +1,50 @@
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    document.getElementById('username-error').textContent = '';
+    document.getElementById('password-error').textContent = '';
+    document.getElementById('invalid-error').textContent = '';
+
+    let valid = true;
+
+    if (!username) {
+        document.getElementById('username-error').textContent = 'Username is required.';
+        valid = false;
+    }
+    if (!password) {
+        document.getElementById('password-error').textContent = 'Password is required.';
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    const result = await response.json();
+
+    if (response.status === 400) {
+        if (result.username) {
+            document.getElementById('username-error').textContent = result.username;
+        }
+        if (result.password) {
+            document.getElementById('password-error').textContent = result.password;
+        }
+        if (result.invalid) {
+            document.getElementById('invalid-error').textContent = result.invalid;
+        }
+    } else if (response.status === 200) {
+        window.location.href = result.redirect;
+    }
+});
+
 async function fetchLeaderboard() {
     try {
         const response = await fetch('/leaderboard');
