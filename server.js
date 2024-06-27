@@ -77,19 +77,17 @@ app.post('/login', async (req, res) => {
     const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
-    if (!user) {
+    if (!user.rows[0]) {
+      // Username not found scenario
       return res.status(401).json({ error: 'Username not found.' });
-      // Alternatively, render with error in case of server-side rendering
-      // res.render('login', { error: { type: 'userNotFound' } });
-    }
+  }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
+  const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
+        
+  if (!passwordMatch) {
+      // Password does not match scenario
       return res.status(404).json({ error: 'Invalid password.' });
-      // Alternatively, render with error in case of server-side rendering
-      // res.render('login', { error: { type: 'incorrectPassword' } });
-    }
-
+  }
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game')
