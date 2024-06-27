@@ -6,11 +6,12 @@ const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const SpellChecker = require('simple-spellchecker');
 const { Pool } = require('pg');
-const { SECRET_KEY } = require('./config');
+
 
 const app = express();
 const port = process.env.PORT || 4000;
 const connectionString = 'postgresql://wordx_2qxd_user:un0HfObZ8GKpQQIV4h4bu3lDDA5SrXcK@dpg-cpua8dqju9rs73fvammg-a/wordx_2qxd';
+const secretKey = 'hazelislong';
 
 const db = new Pool({
   connectionString:connectionString,
@@ -82,7 +83,7 @@ app.post('/login', async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) return res.status(401).send('Invalid password.');
 
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game');
   } catch (err) {
