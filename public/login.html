@@ -59,8 +59,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Handle different error scenarios here
             if (response.status === 401 || response.status === 404) {
                 errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
-            } else {
-                throw new Error('Login failed.');
             }
         }
     } catch (error) {
