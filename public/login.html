@@ -27,8 +27,8 @@
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent default form submission
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -38,14 +38,41 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     errorMessages.innerHTML = '';
 
     // Client-side validation
-    if (!username && !password) {
+    if (!username || !password) {
         errorMessages.innerHTML = '<div class="alert alert-danger">Username and password are required.</div>';
-    } else if (!username) {
-        errorMessages.innerHTML = '<div class="alert alert-danger">Username is required.</div>';
-    } else if (!password) {
-        errorMessages.innerHTML = '<div class="alert alert-danger">Password is required.</div>';
+        return;
     }
-    // Submit the form traditionally
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        // Log the response body as JSON string for debugging
+        const responseBody = await response.text(); // Get response body as text
+        console.log('Response Body:', responseBody);
+
+        // Handle specific HTTP status codes
+        if (response.status === 401 || response.status === 404) {
+            const errorData = await response.json();
+            errorMessages.innerHTML = `<div class="alert alert-danger">${errorData.error}</div>`;
+            return;
+        }
+
+        // Handle success case
+        if (response.ok) {
+            const result = await response.json();
+            window.location.href = result.redirect; // Redirect to the game or dashboard page
+        }
+    } catch (error) {
+        console.error('Login request failed:', error);
+        errorMessages.innerHTML = '<div class="alert alert-danger">Login request failed. Please try again later.</div>';
+    }
 });
+
 </script>
 </html>
