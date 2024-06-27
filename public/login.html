@@ -11,73 +11,58 @@
 <body>
     <h1>Wordx</h1>
     <h2>Login</h2>
-    <form action="/login" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="login">
-    </form>
-<div id="username-error"></div>
-<div id="password-error"></div>
-<div id="invalid-error"></div>
+    <div class="container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <div id="errorMessages"></div>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" id="username" name="username" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessages = document.getElementById('errorMessages');
 
-    <script><!-- Modal -->
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-    
-        // Clear previous errors
-        document.getElementById('username-error').textContent = '';
-        document.getElementById('password-error').textContent = '';
-        document.getElementById('invalid-error').textContent = '';
-    
-        let valid = true;
-    
-        if (!username) {
-            displayError('username-error', 'Username is required.');
-            valid = false;
-        }
-        if (!password) {
-            displayError('password-error', 'Password is required.');
-            valid = false;
-        }
-    
-        if (!valid) return;
-    
-        try {
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-    
-            if (response.status === 404 || response.status === 401) {
-                const result = await response.json();
-                if (response.status === 404) {
-                    displayError('username-error', result.error);
-                } else if (response.status === 401) {
-                    displayError('password-error', result.error);
-                }
-            } else if (response.status === 200) {
-                const result = await response.json();
-                window.location.href = result.redirect; // Redirect to game screen upon successful login
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            displayError('invalid-error', 'Unexpected error occurred. Please try again.');
-        }
-    });
-    
-    function displayError(elementId, message) {
-        const errorElement = document.getElementById(elementId);
-        errorElement.textContent = message;
-        errorElement.classList.add('alert', 'alert-danger'); // Add Bootstrap alert class
+    // Clear previous error messages
+    errorMessages.innerHTML = '';
+
+    if (!username || !password) {
+        errorMessages.innerHTML = '<div class="alert alert-danger">Username and password are required.</div>';
+        return;
     }
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            errorMessages.innerHTML = `<div class="alert alert-danger">${errorData.error}</div>`;
+            return;
+        }
+
+        const responseData = await response.json();
+        window.location.href = responseData.redirect; // Redirect to game screen
+    } catch (error) {
+        console.error('Error:', error);
+        errorMessages.innerHTML = '<div class="alert alert-danger">An unexpected error occurred. Please try again later.</div>';
+    }
+});
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-q6QX1QNrkRYwKoOJDg3C6uJ0Z4h1yeRjcHXde0J6mGSlZUzfLREx7UEN0u8D9L8z" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-z2oLAhRjmIvbOHImzR8HUr6k+fgy3MWyUI8+0+dn+k5do2n6wW5z3Md8jMsS8p3I" crossorigin="anonymous"></script>
 </html>
