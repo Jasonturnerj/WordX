@@ -78,14 +78,14 @@ app.post('/login', async (req, res) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      return res.render('login', { error: { type: 'userNotFound' } });
       // Alternatively, render with error in case of server-side rendering
       // res.render('login', { error: { type: 'userNotFound' } });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid password.' });
+      return res.render('login', { error: { type: 'incorrectPassword' } });
       // Alternatively, render with error in case of server-side rendering
       // res.render('login', { error: { type: 'incorrectPassword' } });
     }
