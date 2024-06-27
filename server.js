@@ -65,7 +65,7 @@ app.post('/signup', async (req, res) => {
     const result = await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id', [username, email, hashedPassword]);
     const userId = result.rows[0].id;
 
-    const token = jwt.sign({ id: userId, username }, SECRET_KEY, { expiresIn: '1h' });
+    const token = jwt.sign({ id: userId, username }, secretKey, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
     res.redirect('/game');
   } catch (err) {
