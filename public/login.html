@@ -41,7 +41,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         return;
     }
 
-    const response = await fetch('/login', {
+    const response = await('/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -54,11 +54,9 @@ if (response.ok) {
     window.location.href = result.redirect; // Redirect to the game or dashboard page
 } else {
     // Handle different error scenarios here
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 404) {
         errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
-    } else {
-        errorMessages.innerHTML = '<div class="alert alert-danger">Error logging in. Please try again later.</div>';
-    }
+    } 
 }
 });
 </script>
