@@ -74,20 +74,24 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-    const user = result.rows[0];
+      const user = await User.findOne({ username });
 
-    if (!user) return res.status(404).send('User not found.');
+      if (!user) {
+          return res.status(404).json({ error: 'User not found.' });
+      }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) return res.status(401).send('Invalid password.');
+      const passwordMatch = await bcrypt.compare(password, user.password);
 
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-    res.cookie('jwt', token, { httpOnly: true });
-    res.redirect('/game');
+      if (!passwordMatch) {
+          return res.status(401).json({ error: 'Invalid password.' });
+      }
+
+      // Successful login
+      const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+      res.status(200).json({ redirect: '/game' });
   } catch (err) {
-    console.error('Error logging in:', err);
-    res.status(500).send('Internal server error.');
+      console.error('Error logging in:', err);
+      res.status(500).json({ error: 'Internal server error.' });
   }
 });
 

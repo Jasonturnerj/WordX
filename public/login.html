@@ -37,7 +37,7 @@
     </div>
 
     <script>
-        const response = await fetch('/login', {
+const response = await fetch('/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -48,16 +48,15 @@
 if (response.status === 400) {
     const result = await response.json();
     if (result.error === 'User not found.') {
-        // Handle user not found error (e.g., display message on UI)
         document.getElementById('username-error').textContent = 'User not found.';
     } else if (result.error === 'Invalid password.') {
-        // Handle invalid password error (e.g., display message on UI)
         document.getElementById('password-error').textContent = 'Invalid password.';
     }
 } else if (response.status === 200) {
     const result = await response.json();
-    window.location.href = result.redirect; // Redirect to the game screen upon successful login
+    window.location.href = result.redirect; // Redirect to game screen upon successful login
 }
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-q6QX1QNrkRYwKoOJDg3C6uJ0Z4h1yeRjcHXde0J6mGSlZUzfLREx7UEN0u8D9L8z" crossorigin="anonymous"></script>
