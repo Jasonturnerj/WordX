@@ -42,6 +42,12 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            if (!username || !password) {
+                document.getElementById('modalBody').textContent = 'Please enter both username and password.';
+                new bootstrap.Modal(document.getElementById('errorModal')).show();
+                return;
+            }
+
             try {
                 const response = await fetch('/login', {
                     method: 'POST',
@@ -68,5 +74,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-q6QX1QNrkRYwKoOJDg3C6uJ0Z4h1yeRjcHXde0J6mGSlZUzfLREx7UEN0u8D9L8z" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-z2oLAhRjmIvbOHImzR8HUr6k+fgy3MWyUI8+0+dn+k5do2n6wW5z3Md8jMsS8p3I" crossorigin="anonymous"></script>
-</body>
 </html>
