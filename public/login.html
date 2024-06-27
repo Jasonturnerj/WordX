@@ -16,11 +16,9 @@
         <input type="text" id="username" name="username" required>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required> 
-        <p class="error-message">
         <% if (error && error.type === 'incorrectCredentials') { %>
-                Incorrect username or password.
+            <p class="error-message">Incorrect username or password.</p>
         <% } %>
-        </p>
         <input type="submit" value="Login">
     </form>
    
