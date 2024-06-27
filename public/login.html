@@ -28,7 +28,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
 document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -44,7 +43,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     }
 
     // Submit the form traditionally
-    this.submit();
 });
 </script>
 </html>
