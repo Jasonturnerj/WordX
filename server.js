@@ -77,12 +77,12 @@ app.post('/login', async (req, res) => {
     const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
 
-    if (!user.rows[0]) {
+    if (!user) {
       // Username not found scenario
       return res.status(401).json({ error: 'Username not found.' });
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.rows[0].password);
+  const passwordMatch = await bcrypt.compare(password, user.password);
         
   if (!passwordMatch) {
       // Password does not match scenario
