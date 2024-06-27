@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Wordx</h1>
+    <h2>Wordx</h2>
     <h2>Login</h2>
     <div class="container">
         <form id="loginForm">
@@ -51,8 +51,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         });
 
         if (!response.ok) {
-            errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
-            return;
+            const result = await response.json();
+            window.location.href = result.redirect;
         }
 
         const responseData = await response.json();
