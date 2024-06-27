@@ -92,7 +92,7 @@ app.post('/login', async (req, res) => {
 
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('jwt', token, { httpOnly: true });
-    res.json('/game')
+    res.redirect('/game')
   } catch (err) {
     console.error('Error logging in:', err);
     res.status(500).send('Internal server error.');
