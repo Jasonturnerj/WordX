@@ -50,22 +50,18 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             body: JSON.stringify({ username, password }),
         });
 
-        
-        if (response.status === 404) {
-            errorMessages.innerHTML = `<div class="alert alert-danger">${responseData.error}</div>`;
-            return;
-        }
-
-        if (response.status === 401) {
-            errorMessages.innerHTML = `<div class="alert alert-danger">${responseData.error}</div>`;
-            return;
-        }
-
         if (!response.ok) {
-            errorMessages.innerHTML = '<div class="alert alert-danger">An unexpected error occurred. Please try again later.</div>';
+            errorMessages.innerHTML = '<div class="alert alert-danger">Invalid username or password. Please try again.</div>';
             return;
         }
+
         const responseData = await response.json();
+
+        if (response.status === 404 || response.status === 401) {
+            errorMessages.innerHTML = `<div class="alert alert-danger">${responseData.error}</div>`;
+            return;
+        }
+
         window.location.href = responseData.redirect; // Redirect to game screen
     } catch (error) {
         console.error('Error:', error);
