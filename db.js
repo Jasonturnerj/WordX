@@ -1,20 +1,9 @@
 "use strict";
-/** Database setup for jobly. */
 const { Pool } = require("pg");
-const { getDatabaseUri } = require("./config");
+const { databaseUri } = require("./config");
 
-let db;
+const db = new Pool({
+  connectionString: databaseUri,
+});
 
-if (process.env.NODE_ENV === "production") {
-  db = new Pool({
-    connectionString: getDatabaseUri(),
-  });
-} else {
-  db = new Pool({
-    connectionString: getDatabaseUri()
-  });
-}
-
-db.connect();
-
-module.exports = db;
+module.exports = { db };
