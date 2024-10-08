@@ -107,8 +107,6 @@ app.post('/submit_score', authenticateToken, async (req, res) => {
     const result = await db.query(
       `INSERT INTO scores (user_id, percent, words_per_minute)
        VALUES ($1, $2, $3)
-       ON CONFLICT (user_id)
-       DO UPDATE SET percent = EXCLUDED.percent, words_per_minute = EXCLUDED.words_per_minute
        RETURNING *`,
       [userId, sanitizedPercent, sanitizedWordsPerMinute]
     );
