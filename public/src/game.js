@@ -27,10 +27,10 @@ function updateLeaderboard(leaderboardData) {
 }
 
 function startTimer() {
-    let timeLeft = 60;
+    let timeLeft = 10;
     const timerElement = document.getElementById('timer');
 
-    const countdown = setInterval(function() {
+    const countdown = setInterval(function () {
         timerElement.textContent = timeLeft + 's';
 
         if (timeLeft <= 0) {
@@ -41,7 +41,7 @@ function startTimer() {
                 url: "/misspelled_count",
                 method: "POST",
                 data: { words: totalWords }
-            }).then(function(misspelledWord) {
+            }).then(function (misspelledWord) {
                 console.log('Misspelled Words Count:', misspelledWord); // Debugging
                 let wpm = totalWords.length - misspelledWord;
                 console.log('Words Per Minute:', wpm); // Debugging
@@ -52,7 +52,7 @@ function startTimer() {
                     url: "/submit_score",
                     method: "POST",
                     data: { percent: percent, words_per_minute: wpm }
-                }).done(function(data) {
+                }).done(function (data) {
                     console.log('Score submission response:', data); // Debugging
                 });
 
@@ -65,7 +65,7 @@ function startTimer() {
                 $("#score-body").append(row);
                 $('#score-modal').modal("show");
 
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error('Error fetching misspelled words count:', error);
             });
         }
@@ -75,18 +75,18 @@ function startTimer() {
 }
 
 var timerStarted = false
-$("#textBox").one("input", function() {
+$("#textBox").one("input", function () {
     if (!timerStarted) {
         startTimer()
         timerStarted = true
     }
 })
 
-document.querySelector('.btn-close').addEventListener('click', function() {
+document.querySelector('.btn-close').addEventListener('click', function () {
     location.reload();
 });
 
-$('#textBox').on('paste', function(e){
+$('#textBox').on('paste', function (e) {
     e.preventDefault();
     alert("Pasting is not allowed!")
 });
