@@ -4,6 +4,9 @@ const { databaseUri } = require("./config");
 
 const db = new Pool({
   connectionString: databaseUri,
+  ssl: {
+    rejectUnauthorized: false, // required for self-signed SSL like Render's
+  },
 });
 
 module.exports = { db };
